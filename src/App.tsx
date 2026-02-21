@@ -11,6 +11,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
+import Recipes from "./pages/Recipes";
+import RecipeDetail from "./pages/RecipeDetail";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -27,21 +32,52 @@ const rootRoute = createRootRoute({
   ),
 })
 
-// Create index route
+// Create routes
 const indexRoute = createTanStackRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: Index,
 })
 
-// Create route tree
-const routeTree = rootRoute.addChildren([indexRoute])
+const recipesRoute = createTanStackRoute({
+  getParentRoute: () => rootRoute,
+  path: '/recipes',
+  component: Recipes,
+})
 
-// Create router with proper TypeScript configuration
+const recipeDetailRoute = createTanStackRoute({
+  getParentRoute: () => rootRoute,
+  path: '/recipes/$slug',
+  component: RecipeDetail,
+})
+
+const aboutRoute = createTanStackRoute({
+  getParentRoute: () => rootRoute,
+  path: '/about',
+  component: About,
+})
+
+const contactRoute = createTanStackRoute({
+  getParentRoute: () => rootRoute,
+  path: '/contact',
+  component: Contact,
+})
+
+// Create route tree
+const routeTree = rootRoute.addChildren([
+  indexRoute, 
+  recipesRoute, 
+  recipeDetailRoute, 
+  aboutRoute, 
+  contactRoute
+])
+
+// Create router
 const router = createRouter({ 
   routeTree,
   defaultPreload: 'intent' as const,
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: NotFound,
 })
 
 // Register router for type safety
@@ -54,4 +90,3 @@ declare module '@tanstack/react-router' {
 const App = () => <RouterProvider router={router} />
 
 export default App;
-
